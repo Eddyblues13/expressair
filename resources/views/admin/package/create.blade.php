@@ -1,36 +1,34 @@
-@include('admin.header')
+"@include('admin.header')
 <div class="main-panel">
     <div class="content bg-light">
         <div class="page-inner">
             <div class="mt-2 mb-4">
-                <h1 class="title1 text-dark">Update Package</h1>
+                <h1 class="title1 text-dark">Create New Package</h1>
             </div>
 
             <div class="row">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
-                            <form id="updatePackageForm" method="POST"
-                                action="{{ route('admin.packages.update', $package->id) }}">
+                            <form id="createPackageForm" method="POST" action="{{ route('admin.packages.store') }}">
                                 @csrf
-                                @method('PUT')
 
                                 <!-- Progress Steps Indicator -->
                                 <div class="steps-progress mb-5">
                                     <div class="steps">
-                                        <div class="step active" data-step="1" onclick="jumpToStep(1)">
+                                        <div class="step active" data-step="1">
                                             <div class="step-number">1</div>
                                             <div class="step-title">Sender/Receiver</div>
                                         </div>
-                                        <div class="step" data-step="2" onclick="jumpToStep(2)">
+                                        <div class="step" data-step="2">
                                             <div class="step-number">2</div>
                                             <div class="step-title">Package Details</div>
                                         </div>
-                                        <div class="step" data-step="3" onclick="jumpToStep(3)">
+                                        <div class="step" data-step="3">
                                             <div class="step-number">3</div>
                                             <div class="step-title">Shipping</div>
                                         </div>
-                                        <div class="step" data-step="4" onclick="jumpToStep(4)">
+                                        <div class="step" data-step="4">
                                             <div class="step-number">4</div>
                                             <div class="step-title">Tracking</div>
                                         </div>
@@ -54,14 +52,13 @@
                                                     <div class="form-group">
                                                         <label>Full Name <span class="text-danger">*</span></label>
                                                         <input type="text" name="sender_name" class="form-control"
-                                                            value="{{ old('sender_name', $package->sender_name) }}"
-                                                            required>
+                                                            value="{{ old('sender_name') }}" required>
                                                         <span class="text-danger" id="sender_name_error"></span>
                                                     </div>
                                                     <div class="form-group">
                                                         <label>Address</label>
                                                         <input type="text" name="sender_address" class="form-control"
-                                                            value="{{ old('sender_address', $package->sender_address) }}">
+                                                            value="{{ old('sender_address') }}">
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-md-6">
@@ -69,7 +66,7 @@
                                                                 <label>City</label>
                                                                 <input type="text" name="sender_city"
                                                                     class="form-control"
-                                                                    value="{{ old('sender_city', $package->sender_city) }}">
+                                                                    value="{{ old('sender_city') }}">
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -77,7 +74,7 @@
                                                                 <label>State/Province</label>
                                                                 <input type="text" name="sender_state"
                                                                     class="form-control"
-                                                                    value="{{ old('sender_state', $package->sender_state) }}">
+                                                                    value="{{ old('sender_state') }}">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -87,7 +84,7 @@
                                                                 <label>ZIP/Postal Code</label>
                                                                 <input type="text" name="sender_zip"
                                                                     class="form-control"
-                                                                    value="{{ old('sender_zip', $package->sender_zip) }}">
+                                                                    value="{{ old('sender_zip') }}">
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -96,9 +93,8 @@
                                                                 <select name="sender_country" class="form-control">
                                                                     <option value="">Select Country</option>
                                                                     @foreach(config('countries') as $code => $name)
-                                                                    <option value="{{ $name }}" {{ old('sender_country',
-                                                                        $package->sender_country) == $name ? 'selected'
-                                                                        : ''
+                                                                    <option value="{{ $name }}" {{
+                                                                        old('sender_country')==$name ? 'selected' : ''
                                                                         }}>
                                                                         {{ $name }}
                                                                     </option>
@@ -113,7 +109,7 @@
                                                                 <label>Phone</label>
                                                                 <input type="text" name="sender_phone"
                                                                     class="form-control"
-                                                                    value="{{ old('sender_phone', $package->sender_phone) }}">
+                                                                    value="{{ old('sender_phone') }}">
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -121,7 +117,7 @@
                                                                 <label>Email</label>
                                                                 <input type="email" name="sender_email"
                                                                     class="form-control"
-                                                                    value="{{ old('sender_email', $package->sender_email) }}">
+                                                                    value="{{ old('sender_email') }}">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -138,14 +134,13 @@
                                                     <div class="form-group">
                                                         <label>Full Name <span class="text-danger">*</span></label>
                                                         <input type="text" name="receiver_name" class="form-control"
-                                                            value="{{ old('receiver_name', $package->receiver_name) }}"
-                                                            required>
+                                                            value="{{ old('receiver_name') }}" required>
                                                         <span class="text-danger" id="receiver_name_error"></span>
                                                     </div>
                                                     <div class="form-group">
                                                         <label>Address</label>
                                                         <input type="text" name="receiver_address" class="form-control"
-                                                            value="{{ old('receiver_address', $package->receiver_address) }}">
+                                                            value="{{ old('receiver_address') }}">
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-md-6">
@@ -153,7 +148,7 @@
                                                                 <label>City</label>
                                                                 <input type="text" name="receiver_city"
                                                                     class="form-control"
-                                                                    value="{{ old('receiver_city', $package->receiver_city) }}">
+                                                                    value="{{ old('receiver_city') }}">
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -161,7 +156,7 @@
                                                                 <label>State/Province</label>
                                                                 <input type="text" name="receiver_state"
                                                                     class="form-control"
-                                                                    value="{{ old('receiver_state', $package->receiver_state) }}">
+                                                                    value="{{ old('receiver_state') }}">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -171,7 +166,7 @@
                                                                 <label>ZIP/Postal Code</label>
                                                                 <input type="text" name="receiver_zip"
                                                                     class="form-control"
-                                                                    value="{{ old('receiver_zip', $package->receiver_zip) }}">
+                                                                    value="{{ old('receiver_zip') }}">
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -181,8 +176,7 @@
                                                                     <option value="">Select Country</option>
                                                                     @foreach(config('countries') as $code => $name)
                                                                     <option value="{{ $name }}" {{
-                                                                        old('receiver_country', $package->
-                                                                        receiver_country) == $name ? 'selected' : ''
+                                                                        old('receiver_country')==$name ? 'selected' : ''
                                                                         }}>
                                                                         {{ $name }}
                                                                     </option>
@@ -197,7 +191,7 @@
                                                                 <label>Phone</label>
                                                                 <input type="text" name="receiver_phone"
                                                                     class="form-control"
-                                                                    value="{{ old('receiver_phone', $package->receiver_phone) }}">
+                                                                    value="{{ old('receiver_phone') }}">
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -205,7 +199,7 @@
                                                                 <label>Email</label>
                                                                 <input type="email" name="receiver_email"
                                                                     class="form-control"
-                                                                    value="{{ old('receiver_email', $package->receiver_email) }}">
+                                                                    value="{{ old('receiver_email') }}">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -230,19 +224,19 @@
                                             <div class="form-group">
                                                 <label>Tracking Number <span class="text-danger">*</span></label>
                                                 <input type="text" name="tracking_number" class="form-control"
-                                                    value="{{ old('tracking_number', $package->tracking_number) }}"
+                                                    value="{{ old('tracking_number', 'PKG-' . strtoupper(uniqid())) }}"
                                                     required>
                                                 <span class="text-danger" id="tracking_number_error"></span>
                                             </div>
                                             <div class="form-group">
                                                 <label>Item Description</label>
                                                 <textarea name="item_description" class="form-control"
-                                                    rows="3">{{ old('item_description', $package->item_description) }}</textarea>
+                                                    rows="3">{{ old('item_description') }}</textarea>
                                             </div>
                                             <div class="form-group">
                                                 <label>Item Quantity</label>
                                                 <input type="number" name="item_quantity" class="form-control"
-                                                    value="{{ old('item_quantity', $package->item_quantity) }}">
+                                                    value="{{ old('item_quantity', 1) }}">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -253,16 +247,14 @@
                                                         <span class="input-group-text">$</span>
                                                     </div>
                                                     <input type="number" step="0.01" name="declared_value"
-                                                        class="form-control"
-                                                        value="{{ old('declared_value', $package->declared_value) }}">
+                                                        class="form-control" value="{{ old('declared_value', 0) }}">
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label>Total Weight (kg)</label>
                                                 <div class="input-group">
                                                     <input type="number" step="0.01" name="total_weight"
-                                                        class="form-control"
-                                                        value="{{ old('total_weight', $package->total_weight) }}">
+                                                        class="form-control" value="{{ old('total_weight', 1) }}">
                                                     <div class="input-group-append">
                                                         <span class="input-group-text">kg</span>
                                                     </div>
@@ -271,14 +263,13 @@
                                             <div class="form-group">
                                                 <label>Number of Boxes</label>
                                                 <input type="number" name="number_of_boxes" class="form-control"
-                                                    value="{{ old('number_of_boxes', $package->number_of_boxes) }}">
+                                                    value="{{ old('number_of_boxes', 1) }}">
                                             </div>
                                             <div class="form-group">
                                                 <label>Box Weight (kg)</label>
                                                 <div class="input-group">
                                                     <input type="number" step="0.01" name="box_weight"
-                                                        class="form-control"
-                                                        value="{{ old('box_weight', $package->box_weight) }}">
+                                                        class="form-control" value="{{ old('box_weight', 1) }}">
                                                     <div class="input-group-append">
                                                         <span class="input-group-text">kg</span>
                                                     </div>
@@ -306,24 +297,24 @@
                                             <div class="form-group">
                                                 <label>Shipping From</label>
                                                 <input type="text" name="shipping_from" class="form-control"
-                                                    value="{{ old('shipping_from', $package->shipping_from) }}">
+                                                    value="{{ old('shipping_from') }}">
                                             </div>
                                             <div class="form-group">
                                                 <label>Shipping Date</label>
                                                 <input type="date" name="shipping_date" class="form-control"
-                                                    value="{{ old('shipping_date', $package->shipping_date ? (\Carbon\Carbon::parse($package->shipping_date)->format('Y-m-d')) : '') }}">
+                                                    value="{{ old('shipping_date', date('Y-m-d')) }}">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Shipping To</label>
                                                 <input type="text" name="shipping_to" class="form-control"
-                                                    value="{{ old('shipping_to', $package->shipping_to) }}">
+                                                    value="{{ old('shipping_to') }}">
                                             </div>
                                             <div class="form-group">
                                                 <label>Estimated Delivery Date</label>
                                                 <input type="date" name="estimated_delivery_date" class="form-control"
-                                                    value="{{ old('estimated_delivery_date', $package->estimated_delivery_date ? (\Carbon\Carbon::parse($package->estimated_delivery_date)->format('Y-m-d')) : '') }}">
+                                                    value="{{ old('estimated_delivery_date', date('Y-m-d', strtotime('+3 days'))) }}">
                                             </div>
                                         </div>
                                     </div>
@@ -347,17 +338,13 @@
                                             <div class="form-group">
                                                 <label>Current Step</label>
                                                 <select name="current_step" class="form-control">
-                                                    <option value="1" {{ old('current_step', $package->current_step)==1
-                                                        ? 'selected' : '' }}>
+                                                    <option value="1" {{ old('current_step', 1)==1 ? 'selected' : '' }}>
                                                         Step 1: Initiation</option>
-                                                    <option value="2" {{ old('current_step', $package->current_step)==2
-                                                        ? 'selected' : '' }}>
+                                                    <option value="2" {{ old('current_step', 1)==2 ? 'selected' : '' }}>
                                                         Step 2: Verification</option>
-                                                    <option value="3" {{ old('current_step', $package->current_step)==3
-                                                        ? 'selected' : '' }}>
+                                                    <option value="3" {{ old('current_step', 1)==3 ? 'selected' : '' }}>
                                                         Step 3: Processing</option>
-                                                    <option value="4" {{ old('current_step', $package->current_step)==4
-                                                        ? 'selected' : '' }}>
+                                                    <option value="4" {{ old('current_step', 1)==4 ? 'selected' : '' }}>
                                                         Step 4: Completion</option>
                                                 </select>
                                             </div>
@@ -366,7 +353,7 @@
                                                 <div class="input-group">
                                                     <input type="number" min="0" max="100" name="progress_percentage"
                                                         class="form-control"
-                                                        value="{{ old('progress_percentage', $package->progress_percentage) }}">
+                                                        value="{{ old('progress_percentage', 25) }}">
                                                     <div class="input-group-append">
                                                         <span class="input-group-text">%</span>
                                                     </div>
@@ -377,7 +364,7 @@
                                             <div class="form-group">
                                                 <label>Notes</label>
                                                 <textarea name="notes" class="form-control"
-                                                    rows="3">{{ old('notes', $package->notes) }}</textarea>
+                                                    rows="3">{{ old('notes') }}</textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -387,14 +374,14 @@
                                             <div class="form-group">
                                                 <label>Step {{ $i }} Name</label>
                                                 <input type="text" name="step{{ $i }}_name" class="form-control"
-                                                    value="{{ old('step'.$i.'_name', $package->{'step'.$i.'_name'}) }}">
+                                                    value="{{ old('step'.$i.'_name') }}">
                                             </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Step {{ $i }} Date</label>
                                             <input type="datetime-local" name="step{{ $i }}_date" class="form-control"
-                                                value="{{ old('step'.$i.'_date', $package->{'step'.$i.'_date'} ? \Carbon\Carbon::parse($package->{'step'.$i.'_date'})->format('Y-m-d\TH:i') : '') }}">
+                                                value="{{ old('step'.$i.'_date') }}">
                                         </div>
                                     </div>
                                     @endfor
@@ -411,7 +398,7 @@
                                     </div>
                                     <div class="card-body">
                                         <div id="trackingLocations">
-                                            @foreach($package->trackingLocations as $index => $location)
+                                            <!-- Default first location -->
                                             <div class="tracking-location mb-3 p-3 border rounded">
                                                 <div class="row">
                                                     <div class="col-md-4">
@@ -419,41 +406,23 @@
                                                             <label>Location Name <span
                                                                     class="text-danger">*</span></label>
                                                             <input type="text"
-                                                                name="tracking_locations[{{ $index }}][location_name]"
-                                                                class="form-control" required value="{{ old("
-                                                                tracking_locations.$index.location_name",
-                                                                $location->location_name) }}">
+                                                                name="tracking_locations[0][location_name]"
+                                                                class="form-control" required
+                                                                value="{{ old('tracking_locations.0.location_name', 'Origin Facility') }}">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label>Status <span class="text-danger">*</span></label>
-                                                            <select name="tracking_locations[{{ $index }}][status]"
+                                                            <select name="tracking_locations[0][status]"
                                                                 class="form-control" required>
-                                                                <option value="Package received" {{
-                                                                    old("tracking_locations.$index.status", $location->
-                                                                    status) == 'Package received' ? 'selected' : ''
-                                                                    }}>Package received</option>
-                                                                <option value="In transit" {{
-                                                                    old("tracking_locations.$index.status", $location->
-                                                                    status) == 'In transit' ? 'selected' : '' }}>In
-                                                                    transit</option>
-                                                                <option value="Out for delivery" {{
-                                                                    old("tracking_locations.$index.status", $location->
-                                                                    status) == 'Out for delivery' ? 'selected' : ''
-                                                                    }}>Out for delivery</option>
-                                                                <option value="Delivered" {{
-                                                                    old("tracking_locations.$index.status", $location->
-                                                                    status) == 'Delivered' ? 'selected' : ''
-                                                                    }}>Delivered</option>
-                                                                <option value="Exception" {{
-                                                                    old("tracking_locations.$index.status", $location->
-                                                                    status) == 'Exception' ? 'selected' : ''
-                                                                    }}>Exception</option>
-                                                                <option value="On Hold" {{
-                                                                    old("tracking_locations.$index.status", $location->
-                                                                    status) == 'On Hold' ? 'selected' : ''
-                                                                    }}>On Hold</option>
+                                                                <option value="Package received" selected>Package
+                                                                    received</option>
+                                                                <option value="In transit">In transit</option>
+                                                                <option value="Out for delivery">Out for delivery
+                                                                </option>
+                                                                <option value="Delivered">Delivered</option>
+                                                                <option value="Exception">Exception</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -462,11 +431,9 @@
                                                             <label>Arrival Time <span
                                                                     class="text-danger">*</span></label>
                                                             <input type="datetime-local"
-                                                                name="tracking_locations[{{ $index }}][arrival_time]"
-                                                                class="form-control" required value="{{ old("
-                                                                tracking_locations.$index.arrival_time",
-                                                                $location->arrival_time ?
-                                                            $location->arrival_time->format('Y-m-d\TH:i') : '') }}">
+                                                                name="tracking_locations[0][arrival_time]"
+                                                                class="form-control" required
+                                                                value="{{ old('tracking_locations.0.arrival_time', date('Y-m-d\TH:i')) }}">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-2">
@@ -474,22 +441,16 @@
                                                             <label>Current</label>
                                                             <div class="custom-control custom-switch mt-2">
                                                                 <input type="checkbox" class="custom-control-input"
-                                                                    id="is_current_{{ $index }}"
-                                                                    name="tracking_locations[{{ $index }}][is_current]"
-                                                                    value="1" {{
-                                                                    old("tracking_locations.$index.is_current",
-                                                                    $location->is_current) ? 'checked' : '' }}>
+                                                                    id="is_current_0"
+                                                                    name="tracking_locations[0][is_current]" value="1"
+                                                                    checked>
                                                                 <label class="custom-control-label"
-                                                                    for="is_current_{{ $index }}"></label>
+                                                                    for="is_current_0"></label>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <button type="button" class="btn btn-sm btn-danger remove-location">
-                                                    <i class="fas fa-trash"></i> Remove
-                                                </button>
                                             </div>
-                                            @endforeach
                                         </div>
                                     </div>
                                 </div>
@@ -499,7 +460,7 @@
                                         <i class="fas fa-arrow-left mr-2"></i> Previous
                                     </button>
                                     <button type="submit" class="btn btn-success" id="submitBtn">
-                                        <span id="submitText">Update Package</span>
+                                        <span id="submitText">Create Package</span>
                                         <span id="submitSpinner" class="spinner-border spinner-border-sm d-none"
                                             role="status" aria-hidden="true"></span>
                                     </button>
@@ -532,17 +493,6 @@
         flex: 1;
         position: relative;
         cursor: pointer;
-    }
-
-    .step:hover .step-number {
-        background-color: #007bff;
-        color: white;
-        opacity: 0.8;
-    }
-
-    .step:hover .step-title {
-        color: #007bff;
-        font-weight: bold;
     }
 
     .step-number {
@@ -605,46 +555,6 @@
 </style>
 
 <script>
-    function jumpToStep(stepNumber) {
-        // Don't do anything if we're already on this step
-        if ($(`.step-${stepNumber}`).hasClass('d-none')) {
-            // Hide all steps
-            $('.form-step').removeClass('fadeIn').addClass('d-none');
-            
-            // Show the selected step
-            $(`.step-${stepNumber}`).removeClass('d-none').addClass('fadeIn');
-            
-            // Update progress steps
-            updateProgressSteps(stepNumber);
-            
-            // Scroll to top of the form
-            $('html, body').animate({
-                scrollTop: $('.page-inner').offset().top
-            }, 500);
-        }
-    }
-
-    function updateProgressSteps(activeStep) {
-        // Update step indicators
-        $('.step').removeClass('active');
-        $(`.step[data-step="${activeStep}"]`).addClass('active');
-        
-        // Update progress bar
-        const progressPercentage = ((activeStep - 1) / 3) * 100;
-        $('.progress-bar').css('width', progressPercentage + '%');
-        
-        // Enable/disable navigation buttons as needed
-        $('.prev-step').toggle(activeStep > 1);
-        $('.next-step').toggle(activeStep < 4);
-        
-        // Change next button to submit on last step
-        if (activeStep === 4) {
-            $('.next-step').addClass('d-none');
-        } else {
-            $('.next-step').removeClass('d-none');
-        }
-    }
-
     $(document).ready(function() {
         // Initialize Toastr
         toastr.options = {
@@ -661,58 +571,60 @@
             "hideMethod": "fadeOut"
         };
 
-        // Initialize navigation buttons
-        updateProgressSteps(1);
+        // Track current step
+        let currentStep = 1;
+        
+        // Function to navigate to a specific step
+        function goToStep(stepNumber) {
+            // Validate current step before proceeding if moving forward
+            if (stepNumber > currentStep && !validateStep(currentStep)) {
+                return;
+            }
+            
+            // Hide all steps
+            $('.form-step').removeClass('fadeIn').addClass('fadeOut d-none');
+            
+            // Show the selected step
+            $(`.step-${stepNumber}`).removeClass('d-none').addClass('fadeIn');
+            
+            // Update current step
+            currentStep = stepNumber;
+            
+            // Update progress steps
+            updateProgressSteps(stepNumber);
+            
+            // Scroll to top of the form
+            $('html, body').animate({
+                scrollTop: $('.page-inner').offset().top
+            }, 500);
+        }
 
         // Multi-step form navigation
         $('.next-step').on('click', function() {
-            const currentStep = $(this).closest('.form-step');
-            const nextStep = currentStep.next('.form-step');
-            const currentStepNumber = parseInt(currentStep.attr('class').match(/step-(\d+)/)[1]);
-            const nextStepNumber = currentStepNumber + 1;
-
-            // Validate current step before proceeding
-            if (!validateStep(currentStepNumber)) {
-                return;
-            }
-
-            currentStep.removeClass('fadeIn').addClass('fadeOut');
-            
-            setTimeout(() => {
-                currentStep.addClass('d-none');
-                nextStep.removeClass('d-none').addClass('fadeIn');
-                
-                // Update progress steps
-                updateProgressSteps(nextStepNumber);
-                
-                // Scroll to top of the form
-                $('html, body').animate({
-                    scrollTop: $('.page-inner').offset().top
-                }, 500);
-            }, 500);
+            goToStep(currentStep + 1);
         });
 
         $('.prev-step').on('click', function() {
-            const currentStep = $(this).closest('.form-step');
-            const prevStep = currentStep.prev('.form-step');
-            const currentStepNumber = parseInt(currentStep.attr('class').match(/step-(\d+)/)[1]);
-            const prevStepNumber = currentStepNumber - 1;
-
-            currentStep.removeClass('fadeIn').addClass('fadeOut');
-            
-            setTimeout(() => {
-                currentStep.addClass('d-none');
-                prevStep.removeClass('d-none').addClass('fadeIn');
-                
-                // Update progress steps
-                updateProgressSteps(prevStepNumber);
-                
-                // Scroll to top of the form
-                $('html, body').animate({
-                    scrollTop: $('.page-inner').offset().top
-                }, 500);
-            }, 500);
+            goToStep(currentStep - 1);
         });
+
+        // Click on step numbers to navigate
+        $('.step').on('click', function() {
+            const stepNumber = parseInt($(this).data('step'));
+            if (stepNumber !== currentStep) {
+                goToStep(stepNumber);
+            }
+        });
+
+        function updateProgressSteps(activeStep) {
+            // Update step indicators
+            $('.step').removeClass('active');
+            $(`.step[data-step="${activeStep}"]`).addClass('active');
+            
+            // Update progress bar
+            const progressPercentage = ((activeStep - 1) / 3) * 100;
+            $('.progress-bar').css('width', progressPercentage + '%');
+        }
 
         function validateStep(stepNumber) {
             let isValid = true;
@@ -758,7 +670,7 @@
         }
 
         // Add new tracking location
-        let locationCounter = {{ $package->trackingLocations->count() }};
+        let locationCounter = 1;
         $('#addTrackingLocation').on('click', function() {
             const newLocation = `
                 <div class="tracking-location mb-3 p-3 border rounded">
@@ -826,7 +738,7 @@
         });
 
         // Form submission handling
-        $('#updatePackageForm').on('submit', function(e) {
+        $('#createPackageForm').on('submit', function(e) {
             e.preventDefault();
 
             const form = $(this);
@@ -835,7 +747,7 @@
             const submitSpinner = $('#submitSpinner');
 
             // Show loading state
-            submitText.text('Updating...');
+            submitText.text('Creating...');
             submitSpinner.removeClass('d-none');
             submitBtn.prop('disabled', true);
 
@@ -913,11 +825,11 @@
                         
                         toastr.error('Please fix the validation errors');
                     } else {
-                        toastr.error('An error occurred while updating the package');
+                        toastr.error('An error occurred while creating the package');
                     }
                 },
                 complete: function() {
-                    submitText.text('Update Package');
+                    submitText.text('Create Package');
                     submitSpinner.addClass('d-none');
                     submitBtn.prop('disabled', false);
                 }
@@ -934,4 +846,4 @@
     });
 </script>
 
-@include('admin.footer')
+@include('admin.footer')"
