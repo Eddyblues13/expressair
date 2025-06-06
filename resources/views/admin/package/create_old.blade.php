@@ -16,19 +16,19 @@
                                 <!-- Progress Steps Indicator -->
                                 <div class="steps-progress mb-5">
                                     <div class="steps">
-                                        <div class="step active" data-step="1">
+                                        <div class="step active" data-step="1" onclick="jumpToStep(1)">
                                             <div class="step-number">1</div>
                                             <div class="step-title">Sender/Receiver</div>
                                         </div>
-                                        <div class="step" data-step="2">
+                                        <div class="step" data-step="2" onclick="jumpToStep(2)">
                                             <div class="step-number">2</div>
                                             <div class="step-title">Package Details</div>
                                         </div>
-                                        <div class="step" data-step="3">
+                                        <div class="step" data-step="3" onclick="jumpToStep(3)">
                                             <div class="step-number">3</div>
                                             <div class="step-title">Shipping</div>
                                         </div>
-                                        <div class="step" data-step="4">
+                                        <div class="step" data-step="4" onclick="jumpToStep(4)">
                                             <div class="step-number">4</div>
                                             <div class="step-title">Tracking</div>
                                         </div>
@@ -224,7 +224,7 @@
                                             <div class="form-group">
                                                 <label>Tracking Number <span class="text-danger">*</span></label>
                                                 <input type="text" name="tracking_number" class="form-control"
-                                                    value="{{ old('tracking_number', 'PKG-' . strtoupper(uniqid())) }}"
+                                                    value="{{ old('tracking_number', 'PKG' . strtoupper(uniqid())) }}"
                                                     required>
                                                 <span class="text-danger" id="tracking_number_error"></span>
                                             </div>
@@ -301,8 +301,8 @@
                                             </div>
                                             <div class="form-group">
                                                 <label>Shipping Date</label>
-                                                <input type="date" name="shipping_date" class="form-control"
-                                                    value="{{ old('shipping_date', date('Y-m-d')) }}">
+                                                <input type="datetime-local" name="shipping_date" class="form-control"
+                                                    value="{{ old('shipping_date') }}">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -313,8 +313,8 @@
                                             </div>
                                             <div class="form-group">
                                                 <label>Estimated Delivery Date</label>
-                                                <input type="date" name="estimated_delivery_date" class="form-control"
-                                                    value="{{ old('estimated_delivery_date', date('Y-m-d', strtotime('+3 days'))) }}">
+                                                <input type="datetime-local" name="estimated_delivery_date"
+                                                    class="form-control" value="{{ old('estimated_delivery_date') }}">
                                             </div>
                                         </div>
                                     </div>
@@ -398,7 +398,6 @@
                                     </div>
                                     <div class="card-body">
                                         <div id="trackingLocations">
-                                            <!-- Default first location -->
                                             <div class="tracking-location mb-3 p-3 border rounded">
                                                 <div class="row">
                                                     <div class="col-md-4">
@@ -423,6 +422,7 @@
                                                                 </option>
                                                                 <option value="Delivered">Delivered</option>
                                                                 <option value="Exception">Exception</option>
+                                                                <option value="On Hold">On Hold</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -433,7 +433,7 @@
                                                             <input type="datetime-local"
                                                                 name="tracking_locations[0][arrival_time]"
                                                                 class="form-control" required
-                                                                value="{{ old('tracking_locations.0.arrival_time', date('Y-m-d\TH:i')) }}">
+                                                                value="{{ old('tracking_locations.0.arrival_time', now()->format('Y-m-d\TH:i')) }}">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-2">
@@ -450,6 +450,10 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <button type="button" class="btn btn-sm btn-danger remove-location"
+                                                    disabled>
+                                                    <i class="fas fa-trash"></i> Remove
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -492,6 +496,18 @@
         text-align: center;
         flex: 1;
         position: relative;
+        cursor: pointer;
+    }
+
+    .step:hover .step-number {
+        background-color: #007bff;
+        color: white;
+        opacity: 0.8;
+    }
+
+    .step:hover .step-title {
+        color: #007bff;
+        font-weight: bold;
     }
 
     .step-number {
@@ -553,7 +569,73 @@
     }
 </style>
 
+
+
+@include('admin.footer')
+
 <script>
+    function jumpToStep(stepNumber) {
+        // Don't do anything if we're already on this step
+        const currentStep = $('.form-step:not(.d-none)');
+        if (currentStep.hasClass(`step-${stepNumber}`)) {
+            return;
+        }
+
+        // Get current step number
+        const currentStepNumber = parseInt(currentStep.attr('class').match(/step-(\d+)/)[1]);
+
+        // Only allow going forward or one step back when clicking step numbers
+        if (stepNumber < currentStepNumber - 1) {
+            return;
+        }
+
+        // Validate current step before proceeding if going forward
+        if (stepNumber > currentStepNumber && !validateStep(currentStepNumber)) {
+            return;
+        }
+
+        // Start fade out animation on current step
+        currentStep.removeClass('fadeIn').addClass('fadeOut');
+        
+        // After animation completes
+        setTimeout(() => {
+            currentStep.addClass('d-none').removeClass('fadeOut');
+            
+            // Show the selected step
+            const nextStep = $(`.step-${stepNumber}`);
+            nextStep.removeClass('d-none').addClass('fadeIn');
+            
+            // Update progress steps
+            updateProgressSteps(stepNumber);
+            
+            // Scroll to top of the form
+            $('html, body').animate({
+                scrollTop: $('.page-inner').offset().top
+            }, 500);
+        }, 500);
+    }
+
+    function updateProgressSteps(activeStep) {
+        // Update step indicators
+        $('.step').removeClass('active');
+        $(`.step[data-step="${activeStep}"]`).addClass('active');
+        
+        // Update progress bar
+        const progressPercentage = ((activeStep - 1) / 3) * 100;
+        $('.progress-bar').css('width', progressPercentage + '%');
+        
+        // Enable/disable navigation buttons as needed
+        $('.prev-step').toggle(activeStep > 1);
+        $('.next-step').toggle(activeStep < 4);
+        
+        // Change next button to submit on last step
+        if (activeStep === 4) {
+            $('.next-step').addClass('d-none');
+        } else {
+            $('.next-step').removeClass('d-none');
+        }
+    }
+
     $(document).ready(function() {
         // Initialize Toastr
         toastr.options = {
@@ -570,6 +652,9 @@
             "hideMethod": "fadeOut"
         };
 
+        // Initialize navigation buttons
+        updateProgressSteps(1);
+
         // Multi-step form navigation
         $('.next-step').on('click', function() {
             const currentStep = $(this).closest('.form-step');
@@ -582,10 +667,12 @@
                 return;
             }
 
+            // Start fade out animation
             currentStep.removeClass('fadeIn').addClass('fadeOut');
             
+            // After animation completes
             setTimeout(() => {
-                currentStep.addClass('d-none');
+                currentStep.addClass('d-none').removeClass('fadeOut');
                 nextStep.removeClass('d-none').addClass('fadeIn');
                 
                 // Update progress steps
@@ -604,10 +691,12 @@
             const currentStepNumber = parseInt(currentStep.attr('class').match(/step-(\d+)/)[1]);
             const prevStepNumber = currentStepNumber - 1;
 
+            // Start fade out animation
             currentStep.removeClass('fadeIn').addClass('fadeOut');
             
+            // After animation completes
             setTimeout(() => {
-                currentStep.addClass('d-none');
+                currentStep.addClass('d-none').removeClass('fadeOut');
                 prevStep.removeClass('d-none').addClass('fadeIn');
                 
                 // Update progress steps
@@ -619,16 +708,6 @@
                 }, 500);
             }, 500);
         });
-
-        function updateProgressSteps(activeStep) {
-            // Update step indicators
-            $('.step').removeClass('active');
-            $(`.step[data-step="${activeStep}"]`).addClass('active');
-            
-            // Update progress bar
-            const progressPercentage = ((activeStep - 1) / 3) * 100;
-            $('.progress-bar').css('width', progressPercentage + '%');
-        }
 
         function validateStep(stepNumber) {
             let isValid = true;
@@ -673,7 +752,7 @@
             return isValid;
         }
 
-        // Add new tracking location
+   // Add new tracking location
         let locationCounter = 1;
         $('#addTrackingLocation').on('click', function() {
             const newLocation = `
@@ -849,5 +928,3 @@
         });
     });
 </script>
-
-@include('admin.footer')

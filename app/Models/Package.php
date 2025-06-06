@@ -79,4 +79,11 @@ class Package extends Model
 
         $this->save();
     }
+
+    // app/Models/Package.php
+
+    protected $casts = [
+        'shipping_date' => 'datetime',
+        'estimated_delivery_date' => 'datetime',
+    ];
 }

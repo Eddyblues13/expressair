@@ -25,6 +25,20 @@ class ManagePackageController extends Controller
         }
     }
 
+    public function showIndex()
+    {
+        try {
+            $packages = Package::with('trackingLocations')
+                ->latest()
+                ->paginate(10);
+
+            return view('admin.package.show.index', compact('packages'));
+        } catch (\Exception $e) {
+            Log::error('Error fetching packages: ' . $e->getMessage());
+            return back()->with('error', 'An error occurred while fetching packages.');
+        }
+    }
+
     public function create()
     {
         try {

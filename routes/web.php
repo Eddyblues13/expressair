@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Auth\AdminController;
+use App\Http\Controllers\Admin\PackageController;
 
 
 
@@ -66,9 +68,36 @@ Route::prefix('admin')->middleware('admin')->group(function () {
 
 
     Route::get('/packages', [App\Http\Controllers\ManagePackageController::class, 'index'])->name('admin.packages.index');
+    Route::get('/packages-show', [App\Http\Controllers\ManagePackageController::class, 'showIndex'])->name('admin.packages.show.index');
     Route::get('/packages/create', [App\Http\Controllers\ManagePackageController::class, 'create'])->name('admin.packages.create');
     Route::post('/packages', [App\Http\Controllers\ManagePackageController::class, 'store'])->name('admin.packages.store');
     Route::get('/packages/{package}/edit', [App\Http\Controllers\ManagePackageController::class, 'edit'])->name('admin.packages.edit');
     Route::put('/packages/{package}', [App\Http\Controllers\ManagePackageController::class, 'update'])->name('admin.packages.update');
+    Route::get('/packages/{package}', [App\Http\Controllers\ManagePackageController::class, 'show'])->name('admin.packages.show');
     Route::delete('/packages/{package}', [App\Http\Controllers\ManagePackageController::class, 'destroy'])->name('admin.packages.destroy');
+});;
+
+// // Admin Package Routes
+// Route::prefix('admin')->middleware('admin')->group(function () {
+//     Route::get('/packages', [PackageController::class, 'index'])->name('admin.packages.index');
+//     Route::get('/packages/create', [PackageController::class, 'create'])->name('admin.packages.create');
+//     Route::post('/packages', [PackageController::class, 'store'])->name('admin.packages.store');
+//     Route::get('/packages/{package}', [PackageController::class, 'show'])->name('admin.packages.show');
+//     Route::get('/packages/{package}/edit', [PackageController::class, 'edit'])->name('admin.packages.edit');
+//     Route::put('/packages/{package}', [PackageController::class, 'update'])->name('admin.packages.update');
+//     Route::delete('/packages/{package}', [PackageController::class, 'destroy'])->name('admin.packages.destroy');
+
+//     // Tracking locations
+//     Route::post('/packages/{package}/tracking', [PackageController::class, 'addTrackingLocation'])->name('admin.packages.tracking.store');
+//     Route::put('/tracking/{trackingLocation}', [PackageController::class, 'updateTrackingLocation'])->name('admin.tracking.update');
+//     Route::delete('/tracking/{trackingLocation}', [PackageController::class, 'deleteTrackingLocation'])->name('admin.tracking.destroy');
+// });
+
+
+Route::prefix('admin')->middleware(['admin'])->group(function () {
+    // ... other admin routes ...
+
+    // Password change routes
+    Route::get('/change-password', [AdminController::class, 'showChangePasswordForm'])->name('admin.change-password');
+    Route::put('/{admin}/change-password', [AdminController::class, 'changePassword'])->name('admin.change-password.post');
 });
