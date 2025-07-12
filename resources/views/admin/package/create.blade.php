@@ -246,14 +246,14 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">$</span>
                                                     </div>
-                                                    <input type="number" step="0.01" name="declared_value"
+                                                    <input type="number" step="any" name="declared_value"
                                                         class="form-control" value="{{ old('declared_value', 0) }}">
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label>Total Weight (kg)</label>
                                                 <div class="input-group">
-                                                    <input type="number" step="0.01" name="total_weight"
+                                                    <input type="number" step="any" name="total_weight"
                                                         class="form-control" value="{{ old('total_weight', 1) }}">
                                                     <div class="input-group-append">
                                                         <span class="input-group-text">kg</span>
@@ -268,7 +268,7 @@
                                             <div class="form-group">
                                                 <label>Box Weight (kg)</label>
                                                 <div class="input-group">
-                                                    <input type="number" step="0.01" name="box_weight"
+                                                    <input type="number" step="any" name="box_weight"
                                                         class="form-control" value="{{ old('box_weight', 1) }}">
                                                     <div class="input-group-append">
                                                         <span class="input-group-text">kg</span>
