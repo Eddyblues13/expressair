@@ -227,6 +227,7 @@
                                                     value="{{ old('tracking_number', 'PKG' . strtoupper(uniqid())) }}"
                                                     required>
                                                 <span class="text-danger" id="tracking_number_error"></span>
+                                                <div class="input-example">Automatically generated tracking number</div>
                                             </div>
                                             <div class="form-group">
                                                 <label>Item Description</label>
@@ -237,6 +238,8 @@
                                                 <label>Item Quantity</label>
                                                 <input type="number" name="item_quantity" class="form-control"
                                                     value="{{ old('item_quantity', 1) }}">
+                                                <div class="input-hint">Please enter only numbers (e.g. 5)</div>
+                                                <div class="input-example">Example: 5 (for 5 items)</div>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -249,6 +252,8 @@
                                                     <input type="number" step="any" name="declared_value"
                                                         class="form-control" value="{{ old('declared_value', 0) }}">
                                                 </div>
+                                                <div class="input-hint">Please enter only numbers (e.g. 99.99)</div>
+                                                <div class="input-example">Example: 99.99 (for $99.99)</div>
                                             </div>
                                             <div class="form-group">
                                                 <label>Total Weight (kg)</label>
@@ -259,11 +264,15 @@
                                                         <span class="input-group-text">kg</span>
                                                     </div>
                                                 </div>
+                                                <div class="input-hint">Please enter only numbers (e.g. 2.5)</div>
+                                                <div class="input-example">Example: 2.5 (for 2.5 kilograms)</div>
                                             </div>
                                             <div class="form-group">
                                                 <label>Number of Boxes</label>
                                                 <input type="number" name="number_of_boxes" class="form-control"
                                                     value="{{ old('number_of_boxes', 1) }}">
+                                                <div class="input-hint">Please enter only whole numbers (e.g. 3)</div>
+                                                <div class="input-example">Example: 3 (for 3 boxes)</div>
                                             </div>
                                             <div class="form-group">
                                                 <label>Box Weight (kg)</label>
@@ -274,6 +283,8 @@
                                                         <span class="input-group-text">kg</span>
                                                     </div>
                                                 </div>
+                                                <div class="input-hint">Please enter only numbers (e.g. 0.5)</div>
+                                                <div class="input-example">Example: 0.5 (for 500 grams)</div>
                                             </div>
                                         </div>
                                     </div>
@@ -303,6 +314,7 @@
                                                 <label>Shipping Date</label>
                                                 <input type="datetime-local" name="shipping_date" class="form-control"
                                                     value="{{ old('shipping_date') }}">
+                                                <div class="input-example">Format: YYYY-MM-DD HH:MM</div>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -315,6 +327,7 @@
                                                 <label>Estimated Delivery Date</label>
                                                 <input type="datetime-local" name="estimated_delivery_date"
                                                     class="form-control" value="{{ old('estimated_delivery_date') }}">
+                                                <div class="input-example">Format: YYYY-MM-DD HH:MM</div>
                                             </div>
                                         </div>
                                     </div>
@@ -358,6 +371,8 @@
                                                         <span class="input-group-text">%</span>
                                                     </div>
                                                 </div>
+                                                <div class="input-hint">Enter a value between 0 and 100</div>
+                                                <div class="input-example">Example: 75 (for 75% complete)</div>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -382,6 +397,7 @@
                                             <label>Step {{ $i }} Date</label>
                                             <input type="datetime-local" name="step{{ $i }}_date" class="form-control"
                                                 value="{{ old('step'.$i.'_date') }}">
+                                            <div class="input-example">Format: YYYY-MM-DD HH:MM</div>
                                         </div>
                                     </div>
                                     @endfor
@@ -434,6 +450,7 @@
                                                                 name="tracking_locations[0][arrival_time]"
                                                                 class="form-control" required
                                                                 value="{{ old('tracking_locations.0.arrival_time', now()->format('Y-m-d\TH:i')) }}">
+                                                            <div class="input-example">Format: YYYY-MM-DD HH:MM</div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-2">
@@ -567,9 +584,50 @@
     .animated {
         animation-duration: 0.5s;
     }
+
+    /* Input hints and examples */
+    .input-hint {
+        font-size: 12px;
+        color: #dc3545;
+        margin-top: 2px;
+        display: none;
+    }
+
+    .input-example {
+        font-size: 12px;
+        color: #6c757d;
+        font-style: italic;
+        margin-top: 2px;
+    }
+
+    .is-invalid~.input-hint {
+        display: block;
+    }
+
+    /* Better error highlighting */
+    .is-invalid {
+        border-color: #dc3545;
+    }
+
+    .is-invalid:focus {
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, .25);
+    }
+
+    /* Animation classes */
+    .fadeOut {
+        animation: fadeOut 0.5s;
+    }
+
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+        }
+
+        to {
+            opacity: 0;
+        }
+    }
 </style>
-
-
 
 @include('admin.footer')
 
@@ -634,6 +692,68 @@
         } else {
             $('.next-step').removeClass('d-none');
         }
+    }
+
+    function validateStep(stepNumber) {
+        let isValid = true;
+        
+        // Clear previous errors
+        $('.text-danger').text('');
+        $('.is-invalid').removeClass('is-invalid');
+        $('.input-hint').hide();
+        
+        // Step 1 validation
+        if (stepNumber === 1) {
+            if (!$('input[name="sender_name"]').val().trim()) {
+                $('#sender_name_error').text('Sender name is required');
+                $('input[name="sender_name"]').addClass('is-invalid');
+                isValid = false;
+            }
+            
+            if (!$('input[name="receiver_name"]').val().trim()) {
+                $('#receiver_name_error').text('Receiver name is required');
+                $('input[name="receiver_name"]').addClass('is-invalid');
+                isValid = false;
+            }
+        }
+        
+        // Step 2 validation
+        if (stepNumber === 2) {
+            if (!$('input[name="tracking_number"]').val().trim()) {
+                $('#tracking_number_error').text('Tracking number is required');
+                $('input[name="tracking_number"]').addClass('is-invalid');
+                isValid = false;
+            }
+            
+            // Check numeric fields
+            const numericFields = [
+                'item_quantity', 
+                'total_weight', 
+                'box_weight', 
+                'declared_value',
+                'number_of_boxes'
+            ];
+            
+            numericFields.forEach(field => {
+                const value = $(`input[name="${field}"]`).val();
+                if (value && isNaN(value)) {
+                    $(`input[name="${field}"]`).addClass('is-invalid');
+                    $(`input[name="${field}"]`).siblings('.input-hint').show();
+                    isValid = false;
+                }
+            });
+        }
+        
+        if (!isValid) {
+            // Scroll to first error
+            $('html, body').animate({
+                scrollTop: $('.is-invalid:first').offset().top - 100
+            }, 500);
+            
+            toastr.error('Please correct the highlighted fields');
+        }
+        
+        return isValid;
     }
 
     $(document).ready(function() {
@@ -709,50 +829,19 @@
             }, 500);
         });
 
-        function validateStep(stepNumber) {
-            let isValid = true;
-            
-            // Clear previous errors
-            $('.text-danger').text('');
-            $('.is-invalid').removeClass('is-invalid');
-            
-            // Step 1 validation
-            if (stepNumber === 1) {
-                if (!$('input[name="sender_name"]').val().trim()) {
-                    $('#sender_name_error').text('Sender name is required');
-                    $('input[name="sender_name"]').addClass('is-invalid');
-                    isValid = false;
-                }
-                
-                if (!$('input[name="receiver_name"]').val().trim()) {
-                    $('#receiver_name_error').text('Receiver name is required');
-                    $('input[name="receiver_name"]').addClass('is-invalid');
-                    isValid = false;
-                }
+        // Real-time validation for numeric fields
+        $('input[name="item_quantity"], input[name="total_weight"], input[name="box_weight"], input[name="declared_value"], input[name="number_of_boxes"]').on('input', function() {
+            const value = $(this).val();
+            if (value && isNaN(value)) {
+                $(this).addClass('is-invalid');
+                $(this).siblings('.input-hint').show();
+            } else {
+                $(this).removeClass('is-invalid');
+                $(this).siblings('.input-hint').hide();
             }
-            
-            // Step 2 validation
-            if (stepNumber === 2) {
-                if (!$('input[name="tracking_number"]').val().trim()) {
-                    $('#tracking_number_error').text('Tracking number is required');
-                    $('input[name="tracking_number"]').addClass('is-invalid');
-                    isValid = false;
-                }
-            }
-            
-            if (!isValid) {
-                // Scroll to first error
-                $('html, body').animate({
-                    scrollTop: $('.is-invalid:first').offset().top - 100
-                }, 500);
-                
-                toastr.error('Please fill in all required fields');
-            }
-            
-            return isValid;
-        }
+        });
 
-   // Add new tracking location
+        // Add new tracking location
         let locationCounter = 1;
         $('#addTrackingLocation').on('click', function() {
             const newLocation = `
@@ -782,6 +871,7 @@
                                 <label>Arrival Time <span class="text-danger">*</span></label>
                                 <input type="datetime-local" name="tracking_locations[${locationCounter}][arrival_time]" 
                                     class="form-control" required>
+                                <div class="input-example">Format: YYYY-MM-DD HH:MM</div>
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -837,6 +927,7 @@
             // Clear previous errors
             $('.text-danger').text('');
             $('.is-invalid').removeClass('is-invalid');
+            $('.input-hint').hide();
 
             // Prepare form data
             const formData = new FormData(this);
